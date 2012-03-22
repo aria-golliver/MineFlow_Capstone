@@ -15,7 +15,7 @@ public class Board {
 		this.height = height;
 		this.total_mines = total_mines;
 		
-		generate_board();
+		//generate_board();
 	}
 	
 	public Board(){
@@ -23,10 +23,14 @@ public class Board {
 		height = 9;
 		total_mines = 10;
 		
+		//generate_board();
+	}
+	
+	public void new_game(){
 		generate_board();
 	}
 	
-	public void generate_board(){
+	private void generate_board(){
 		board = new HashMap[width][height];
 		first_move = true;
 		lost = false;
