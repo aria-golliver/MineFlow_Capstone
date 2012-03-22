@@ -19,9 +19,9 @@ public class Board {
 	}
 	
 	public Board(){
-		width = 9;
-		height = 9;
-		total_mines = 10;
+		width = 10;
+		height = 10;
+		total_mines = 4;
 		
 		//generate_board();
 	}
@@ -124,20 +124,21 @@ public class Board {
 	
 	public boolean left_click(int x, int y){
 		if(out_of_bounds(x,y) || won || lost) return false;
+		System.out.println("CLICK (" +x+","+y+")");
 		return reveal(x,y);
 	}
 	
 	public boolean middle_click(int x, int y){
 		if(out_of_bounds(x,y) || won || lost) return false;
 		boolean made_a_move = false;
-		made_a_move = reveal(x-1,y-1) || made_a_move;
-		made_a_move = reveal(x  ,y-1) || made_a_move;
-		made_a_move = reveal(x+1,y-1) || made_a_move;
-		made_a_move = reveal(x+1,y  ) || made_a_move;
-		made_a_move = reveal(x+1,y+1) || made_a_move;
-		made_a_move = reveal(x  ,y+1) || made_a_move;
-		made_a_move = reveal(x-1,y+1) || made_a_move;
-		made_a_move = reveal(x-1,y  ) || made_a_move;
+		made_a_move = left_click(x-1,y-1) || made_a_move;
+		made_a_move = left_click(x  ,y-1) || made_a_move;
+		made_a_move = left_click(x+1,y-1) || made_a_move;
+		made_a_move = left_click(x+1,y  ) || made_a_move;
+		made_a_move = left_click(x+1,y+1) || made_a_move;
+		made_a_move = left_click(x  ,y+1) || made_a_move;
+		made_a_move = left_click(x-1,y+1) || made_a_move;
+		made_a_move = left_click(x-1,y  ) || made_a_move;
 		return made_a_move;
 	}
 	
@@ -157,6 +158,7 @@ public class Board {
 		if((boolean) board[x][y].get("mine?") && !((boolean) board[x][y].get("flagged?"))){
 			//if you hit a mine
 			if(first_move){
+				first_move = false;
 				// if it was your first move, move the mine the first cell w/o a mine starting at the top left
 				board[x][y].put("mine?", false);
 				boolean moved = false;
@@ -174,7 +176,8 @@ public class Board {
 			lost = true;
 			return true;
 		}
-		
+		first_move = false;
+		print_board();
 		// if you didn't hit a mine...
 		if((boolean) board[x][y].get("uncovered?")){
 			return false;
@@ -190,11 +193,22 @@ public class Board {
 				reveal(x-1,y+1);
 				reveal(x-1,y  );
 			}
+			won = check_win();
 			return true;
 		}
 	}
 	
+	private boolean check_win() {
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+				if(!(boolean) board[x][y].get("uncovered?") && !(boolean) board[x][y].get("mine?")) return false;
+			}
+		}
+		return true;
+	}
+
 	public void print_board(){
+		System.out.println("------------");
 		for(int y = 0; y < height; y++){
 			for(int x = 0; x < width; x++){
 				if((boolean) board[x][y].get("flagged?")){
@@ -239,7 +253,7 @@ public class Board {
 
 	public int view_cell(int x, int y) {
 		if(out_of_bounds(x,y)) return -1;
-		if((boolean) board[x][y].get("revealed?"))
+		if((boolean) board[x][y].get("uncovered?"))
 			return (int) board[x][y].get("surrounding_mines"); 
 		return -1;
 	}
