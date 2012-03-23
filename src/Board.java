@@ -129,16 +129,16 @@ public class Board {
 	public boolean left_click(int x, int y){
 		if(out_of_bounds(x,y) || won || lost) return false;
 		
-		System.out.println("CLICK (" +x+","+y+")");
+		//System.out.println("CLICK (" +x+","+y+")");
 		boolean made_a_move = false;
 		if(!(boolean) board[x][y].get("flagged?")) made_a_move = reveal(x,y);
-		print_board();
+		//print_board();
 		return made_a_move;
 	}
 	
 	public boolean middle_click(int x, int y){
 		if(out_of_bounds(x,y) || won || lost) return false;
-		System.out.println("MIDDLE_CLICK (" +x+","+y+")");
+		//System.out.println("MIDDLE_CLICK (" +x+","+y+")");
 		boolean made_a_move = false;
 		made_a_move = left_click(x-1,y-1) || made_a_move;
 		made_a_move = left_click(x  ,y-1) || made_a_move;
@@ -148,15 +148,15 @@ public class Board {
 		made_a_move = left_click(x  ,y+1) || made_a_move;
 		made_a_move = left_click(x-1,y+1) || made_a_move;
 		made_a_move = left_click(x-1,y  ) || made_a_move;
-		print_board();
+		//print_board();
 		return made_a_move;
 	}
 	
 	public boolean right_click(int x, int y){
 		
 		if(toggle_flag(x,y)) {
-			System.out.println("FLAG " + "("+x+","+y+")");
-			print_board();
+			//System.out.println("FLAG " + "("+x+","+y+")");
+			//print_board();
 			return true;
 		} return false;
 		
@@ -261,7 +261,7 @@ public class Board {
 	public static void main(String[] args){
 		Board test = new Board();
 		test.new_game();
-		test.print_board();
+		//test.print_board();
 		test.right_click(0,0);
 		System.out.println(test.board[0][0].get("flagged?"));
 		//test.left_click(3, 3);
