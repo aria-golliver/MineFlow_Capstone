@@ -19,13 +19,14 @@ public class MinesweeperThread extends Thread {
 		int starty = (int) (Math.random() * board.height);
 		while(!board.lost && !board.won){
 			boolean made_a_move = false;
+			
 			for(int x = 0; x<board.width; x++){
 				//System.out.println("1");
 				for(int y = 0; y<board.height; y++){
 					if(board.view_cell(x, y) > 0){
 						
 						int surrounding_empty_spaces = board.total_arround_cell(x, y, "uncovered?", false);
-						int surrounding_flags = board.total_arround_cell(x, y, "flagged?");
+						//int surrounding_flags = board.total_arround_cell(x, y, "flagged?");
 						
 						if (surrounding_empty_spaces == board.view_cell(x,y)){
 							made_a_move = board.right_click(x-1, y-1) || made_a_move;
@@ -45,7 +46,7 @@ public class MinesweeperThread extends Thread {
 				//System.out.println("2");
 				for(int y = 0; y<board.height; y++){
 					int surrounding_empty_spaces = board.total_arround_cell(x, y, "uncovered?", false);
-					int surrounding_flags = board.total_arround_cell(x, y, "uncovered?");
+					int surrounding_flags = board.total_arround_cell(x, y, "flagged?");
 					
 					if(surrounding_empty_spaces > 0 && 
 					   surrounding_flags == board.view_cell(x, y) && 

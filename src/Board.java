@@ -19,9 +19,9 @@ public class Board {
 	}
 	
 	public Board(){
-		width = 10;
-		height = 10;
-		total_mines = 4;
+		width = 9;
+		height = 9;
+		total_mines = 10;
 		
 		//generate_board();
 	}
@@ -165,7 +165,7 @@ public class Board {
 	
 	private boolean toggle_flag(int x, int y){
 		if(out_of_bounds(x,y)) return false;
-		if(!((boolean) board[x][y].get("uncovered?"))){
+		if(!((boolean) board[x][y].get("uncovered?")) && !((boolean) board[x][y].get("flagged?"))){
 			board[x][y].put("flagged?", true);
 			return true;
 		}
@@ -236,7 +236,7 @@ public class Board {
 				if((boolean) board[x][y].get("flagged?")){
 					System.out.print(" F");
 				} else if((boolean) board[x][y].get("mine?")){
-					System.out.print(" X");
+					System.out.print(" #");
 				} else if((boolean) board[x][y].get("uncovered?")){
 					int surrounding_mines = (int) board[x][y].get("surrounding_mines");
 					if(surrounding_mines == 0){
