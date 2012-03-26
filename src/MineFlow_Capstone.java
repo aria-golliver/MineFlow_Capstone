@@ -19,7 +19,7 @@ public class MineFlow_Capstone extends PApplet{
 	public void setup() {
 		size(S_WID,S_HEI,P2D);
 		background(0);
-		frameRate(30);
+		frameRate(60);
 		pixel_array = new int[S_WID*S_HEI];
 		for(int i = 0; i<pixel_array.length; i++){
 			pixel_array[i] = 0x0;
@@ -59,5 +59,6 @@ public class MineFlow_Capstone extends PApplet{
 			//pixels[i] = 0xFFFFFFFF;
 		}
 		updatePixels();
+		saveFrame("img-########.jpg");
 	}
 }

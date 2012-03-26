@@ -25,9 +25,9 @@ public class MinesweeperThread extends Thread {
 			board.new_game();
 			
 			while(!board.lost && !board.won){
-				try {
-					sleep(100);
-				} catch (InterruptedException e) {}
+				/*try {
+					sleep(0);
+				} catch (InterruptedException e) {}*/
 				boolean made_a_move = false;
 				
 				for(int x = 0; x<board.width; x++){
@@ -51,7 +51,7 @@ public class MinesweeperThread extends Thread {
 						}
 					}
 				}
-	
+				int total_clicks = 0;
 				for(int x = 0; x<board.width; x++){
 					//System.out.println("2");
 					for(int y = 0; y<board.height; y++){
@@ -60,7 +60,8 @@ public class MinesweeperThread extends Thread {
 						
 						if(surrounding_empty_spaces > 0 && 
 						   surrounding_flags == board.view_cell(x, y) && 
-						   (boolean) board.board[x][y].get("uncovered?")){
+						   (boolean) board.board[x][y].get("uncovered?") &&
+						   total_clicks++ < 30){
 								made_a_move = board.middle_click(x, y) || made_a_move;
 						}
 					}

@@ -23,7 +23,7 @@ public class Board {
 	public Board(int[] pixels){
 		width = 30*24;
 		height = 16*24;
-		total_mines = (int) (99*24*1.05);
+		total_mines = (int) (99*24*24*1.05);
 		
 		this.pixels = pixels;
 		
@@ -229,8 +229,8 @@ public class Board {
 		int color;
 		int start_x = (int) (x * (1920.0/width));
 		int start_y = (int) (y * (1080.0/height));
-		int end_x = (int) ((x+1) * (1920.0/width));
-		int end_y = (int) ((y+1) * (1080.0/height));
+		int end_x = (int) ((x+1.0) * (1920.0/width));
+		int end_y = (int) ((y+1.0) * (1080.0/height));
 		if((boolean) board[x][y].get("flagged?")){
 			color = 0xFF3232FF;
 		} else if((boolean) board[x][y].get("uncovered?")){
