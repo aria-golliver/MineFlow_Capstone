@@ -4,8 +4,9 @@ public class MinesweeperThread extends Thread {
 	final int[] pixels;
 	final static int screen_width=1920;
 	final static int screen_height=1080;
-	final int board_width=9;
-	final int board_height=9;
+	final int board_width= 30 * 24;
+	final int board_height= 30 * 24;
+	final int mines = (int) (99 * 24 * 24 * 1.05);
 	
 	public static void main(String[] args){
 		MinesweeperThread ms = new MinesweeperThread(new int[screen_width * screen_height]);
@@ -14,7 +15,7 @@ public class MinesweeperThread extends Thread {
 	}
 	
 	public MinesweeperThread(int[] pixels){
-		board = new Board();
+		board = new Board(board_width,board_height,mines,pixels);
 		this.pixels = pixels;
 	}
 
@@ -24,6 +25,9 @@ public class MinesweeperThread extends Thread {
 			board.new_game();
 			
 			while(!board.lost && !board.won){
+				try {
+					sleep(100);
+				} catch (InterruptedException e) {}
 				boolean made_a_move = false;
 				
 				for(int x = 0; x<board.width; x++){
@@ -68,11 +72,11 @@ public class MinesweeperThread extends Thread {
 					made_a_move = board.left_click(x, y);
 				}
 				if(board.won){
-					System.out.println("WON!");
+					//System.out.println("WON!");
 					//board.print_board();
 					//while(true){}
 				} else if(board.lost){
-					System.out.println("LOST!");
+					//System.out.println("LOST!");
 					//board.print_board();
 					//while(true){}
 				}

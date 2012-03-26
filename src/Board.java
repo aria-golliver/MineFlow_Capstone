@@ -9,19 +9,23 @@ public class Board {
 	public final int height;
 	public final int total_mines;
 	private boolean first_move;
+	private int[] pixels;
 	
-	public Board(int width, int height, int total_mines){
+	public Board(int width, int height, int total_mines, int[] pixels){
 		this.width = width;
 		this.height = height;
 		this.total_mines = total_mines;
-		
+
+		this.pixels = pixels;
 		//generate_board();
 	}
 	
-	public Board(){
-		width = 9;
-		height = 9;
-		total_mines = 10;
+	public Board(int[] pixels){
+		width = 30*24;
+		height = 16*24;
+		total_mines = (int) (99*24*1.05);
+		
+		this.pixels = pixels;
 		
 		//generate_board();
 	}
@@ -167,6 +171,7 @@ public class Board {
 		if(out_of_bounds(x,y)) return false;
 		if(!((boolean) board[x][y].get("uncovered?")) && !((boolean) board[x][y].get("flagged?"))){
 			board[x][y].put("flagged?", true);
+			set_screen_pixels(x,y);
 			return true;
 		}
 		return false;
@@ -191,7 +196,7 @@ public class Board {
 					}
 				}
 				generate_surrounding_mines_metadata();
-				reveal(x,y);
+				reveal(x,y); 
 				return true;
 			}
 			lost = true;
@@ -215,10 +220,35 @@ public class Board {
 				reveal(x-1,y  );
 			}
 			won = check_win();
+			set_screen_pixels(x,y);
 			return true;
 		}
 	}
 	
+	private void set_screen_pixels(int x, int y) {
+		int color;
+		int start_x = (int) (x * (1920.0/width));
+		int start_y = (int) (y * (1080.0/height));
+		int end_x = (int) ((x+1) * (1920.0/width));
+		int end_y = (int) ((y+1) * (1080.0/height));
+		if((boolean) board[x][y].get("flagged?")){
+			color = 0xFF3232FF;
+		} else if((boolean) board[x][y].get("uncovered?")){
+			int surrounding_mines = (int) board[x][y].get("surrounding_mines");
+			int alpha = 0xFF;
+			int grey = 0xFF/8 * surrounding_mines;
+			color = (alpha << 24) + (grey << 16) + (grey << 8) + (grey << 0);
+
+		} else {
+			color = 0xFF000000;
+		}
+		for(int iy = start_y; iy < end_y; iy++){
+			for(int ix = start_x; ix < end_x; ix++){
+				pixels[(iy * 1920) + ix] = color;
+			}
+		}
+	}
+
 	private boolean check_win() {
 		for(int x = 0; x < width; x++){
 			for(int y = 0; y < height; y++){
@@ -259,7 +289,7 @@ public class Board {
 	
 	
 	public static void main(String[] args){
-		Board test = new Board();
+		Board test = new Board(new int[1]);
 		test.new_game();
 		//test.print_board();
 		test.right_click(0,0);
