@@ -6,48 +6,56 @@ public class Board {
 	//HashMap mine_position;
 	public HashMap[][] board;
 
-	public final int width;
-	public final int height;
-	public final int total_mines;
+	public final int board_width;
+	public final int board_height;
+	public final int screen_width;
+	public final int screen_height;
+	public final int mines;
 	private boolean first_move;
-	private AtomicInteger[] pixels;
+	private AtomicInteger[] pixels_array;
+	private final float pixel_cell_ratio_width;
+	private final float pixel_cell_ratio_height;
 	
-	public Board(int width, int height, int total_mines, AtomicInteger[] pixel_array){
-		this.width = width;
-		this.height = height;
-		this.total_mines = total_mines;
+	public Board(int board_width, int board_height, int screen_width, int screen_height, int mines, AtomicInteger[] pixel_array){
+		this.board_width = board_width;
+		this.board_height = board_height;
+		this.screen_width = screen_width;
+		this.screen_height = screen_height;
+		this.mines = mines;
+		pixel_cell_ratio_width = ((float)screen_width)/board_width;
+		pixel_cell_ratio_height = ((float)screen_height)/board_height;
 
-		this.pixels = pixel_array;
+		this.pixels_array = pixel_array;
 		//generate_board();
 	}
-	
+	/*
 	public Board(AtomicInteger[] pixels){
-		width = 30*24;
-		height = 16*24;
-		total_mines = (int) (99*24*24*1.05);
+		board_width = 30*24;
+		board_height = 16*24;
+		mines = (int) (99*24*24*1.05);
 		
-		this.pixels = pixels;
+		this.pixels_array = pixels;
 		
 		//generate_board();
-	}
+	}*/
 	
 	public void new_game(){
 		generate_board();
 	}
 	
 	private void generate_board(){
-		board = new HashMap[width][height];
+		board = new HashMap[board_width][board_height];
 		first_move = true;
 		lost = false;
 		won = false;
 		
 		// create the board
 		// it is a 2 dimensional array of hash-maps
-		for(int x = 0; x < width; x++){
-			for(int y = 0; y < height; y++){
+		for(int x = 0; x < board_width; x++){
+			for(int y = 0; y < board_height; y++){
 				board[x][y] = new HashMap();
-				board[x][y].put("x", x);
-				board[x][y].put("y", y);
+				//board[x][y].put("x", x);
+				//board[x][y].put("y", y);
 				board[x][y].put("mine?", false);
 				board[x][y].put("flagged?", false);
 				board[x][y].put("uncovered?", false);
@@ -55,11 +63,11 @@ public class Board {
 			}
 		}
 		
-		int mines_left = total_mines;
+		int mines_left = mines;
 		
 		while(mines_left > 0){
-			int x = (int)(Math.random()*width);
-			int y = (int)(Math.random()*height);
+			int x = (int)(Math.random()*board_width);
+			int y = (int)(Math.random()*board_height);
 			
 			if(!((boolean) board[x][y].get("mine?"))){
 				board[x][y].put("mine?", true);
@@ -91,8 +99,8 @@ public class Board {
 	}
 
 	private void generate_surrounding_mines_metadata() {
-		for(int x = 0; x < width; x++){
-			for(int y = 0; y < height; y++){
+		for(int x = 0; x < board_width; x++){
+			for(int y = 0; y < board_height; y++){
 				board[x][y].put("surrounding_mines", total_arround_cell(x,y, "mine?"));
 			}
 		}
@@ -188,8 +196,8 @@ public class Board {
 				// if it was your first move, move the mine the first cell w/o a mine starting at the top left
 				board[x][y].put("mine?", false);
 				boolean moved = false;
-				for(int iy = 0; iy < height; iy++){
-					for(int ix = 0; ix < width && !moved; ix++){
+				for(int iy = 0; iy < board_height; iy++){
+					for(int ix = 0; ix < board_width && !moved; ix++){
 						if(!(boolean)board[ix][iy].get("mine?")){
 							board[ix][iy].put("mine?", true);
 							moved = true;
@@ -228,10 +236,11 @@ public class Board {
 	
 	private void set_screen_pixels(int x, int y) {
 		int color;
-		int start_x = (int) (x * (1920.0/width));
-		int start_y = (int) (y * (1080.0/height));
-		int end_x = (int) ((x+1.0) * (1920.0/width));
-		int end_y = (int) ((y+1.0) * (1080.0/height));
+		
+		int start_x = (int) Math.floor((x+0) * pixel_cell_ratio_width);
+		int start_y = (int) Math.floor((y+0) * pixel_cell_ratio_height);
+		int end_x =   (int) Math.floor((x+1) * pixel_cell_ratio_width);
+		int end_y =   (int) Math.floor((y+1) * pixel_cell_ratio_height);
 		if((boolean) board[x][y].get("flagged?")){
 			color = 0xFF3232FF;
 		} else if((boolean) board[x][y].get("uncovered?")){
@@ -245,14 +254,14 @@ public class Board {
 		}
 		for(int iy = start_y; iy < end_y; iy++){
 			for(int ix = start_x; ix < end_x; ix++){
-				pixels[(iy * (1920)) + ix].set(color);
+				pixels_array[(iy * (screen_width)) + ix].set(color);
 			}
 		}
 	}
 
 	public boolean check_win() {
-		for(int x = 0; x < width; x++){
-			for(int y = 0; y < height; y++){
+		for(int x = 0; x < board_width; x++){
+			for(int y = 0; y < board_height; y++){
 				if(!(boolean) board[x][y].get("uncovered?") && !(boolean) board[x][y].get("mine?")) return false;
 			}
 		}
@@ -261,9 +270,9 @@ public class Board {
 
 	public void print_board(){
 		System.out.println("    0 1 2 3 4 5 6 7 8 9");
-		for(int y = 0; y < height; y++){
+		for(int y = 0; y < board_height; y++){
 			System.out.print(y+"| ");
-			for(int x = 0; x < width; x++){
+			for(int x = 0; x < board_width; x++){
 				if((boolean) board[x][y].get("flagged?")){
 					System.out.print(" F");
 				} else if((boolean) board[x][y].get("mine?")){
@@ -284,12 +293,12 @@ public class Board {
 	}
 	
 	private boolean out_of_bounds(int x, int y){
-		return (x >= width || x < 0 || y >= height || y < 0);
+		return (x >= board_width || x < 0 || y >= board_height || y < 0);
 	}
 	
 	
 	
-	public static void main(String[] args){
+	/*public static void main(String[] args){
 		Board test = new Board(new AtomicInteger[1]);
 		test.new_game();
 		//test.print_board();
@@ -304,7 +313,7 @@ public class Board {
 		//test.left_click(6, 2);
 		System.out.println("------------");
 		test.print_board();
-	}
+	}*/
 
 	public int view_cell(int x, int y) {
 		if(out_of_bounds(x,y)) return -1;

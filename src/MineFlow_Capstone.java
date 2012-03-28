@@ -3,11 +3,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import processing.core.*;
 
 public class MineFlow_Capstone extends PApplet{
-	final static int WID = 30 * 24;
-	final static int HEI = 16 * 24;
-	final static int S_WID = 1920;
-	final static int S_HEI = 1080;
+	final static int MULTIPLIER = 24;
+	final static int WID = 30 * MULTIPLIER;
+	final static int HEI = 16 * MULTIPLIER;
+	final static int S_WID = 1920;//WID * 1;
+	final static int S_HEI = 1080;//HEI * 1;
 	final static int THREADS = 3;
+	final static int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .95);
 	
 	MinesweeperThread[] threads;
 	boolean first = true;
@@ -15,7 +17,7 @@ public class MineFlow_Capstone extends PApplet{
 	AtomicInteger[] pixel_array;
 	
 	public static void main(String args[]) {
-	    PApplet.main(new String[] { "MineFlow_Capstone"});
+	    PApplet.main(new String[] { "--present", "--bgcolor=#666666", "--hide-stop", "MineFlow_Capstone"});
 	}
 	
 	public void setup() {
@@ -29,7 +31,7 @@ public class MineFlow_Capstone extends PApplet{
 		
 		threads = new MinesweeperThread[THREADS];
 		for(int i = 0; i<threads.length; i++){
-			threads[i] = new MinesweeperThread(pixel_array);
+			threads[i] = new MinesweeperThread(WID,HEI,S_WID,S_HEI,MINES,pixel_array);
 		}
 		for(int i = 0; i<threads.length; i++){
 			threads[i].start();
