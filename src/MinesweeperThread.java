@@ -33,7 +33,7 @@ public class MinesweeperThread extends Thread {
 				
 				/*
 				 *  search for every cell looking for places that must be safe to middle_click
-				 *  	- you know it's safe when the number of set flags exactal equals
+				 *  	- you know it's safe when the number of set flags exactly equals
 				 *  	  the number of surrounding mines (indicated by board.view_cell(x, y)
 				 */
 				for(int x = 0; x<board.board_width; x++){
@@ -49,7 +49,7 @@ public class MinesweeperThread extends Thread {
 				
 				/*
 				 * search for every cell that proves every open cell around it must be flagged
-				 * 		- you know they must be flagged if the # of empty spaces around the cell exactaly
+				 * 		- you know they must be flagged if the # of empty spaces around the cell exactly
 				 * 		  equals the numbers of surrounding mines (indicated by board.view_cell(x, y)
 				 */
 				for(int x = 0; x<board.board_width; x++){

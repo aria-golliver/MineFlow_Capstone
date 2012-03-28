@@ -62,7 +62,6 @@ public class MineFlow_Capstone extends PApplet{
 				current_pixel = color(seperated_colors[0],seperated_colors[1],seperated_colors[2]);
 				pixels[i] = current_pixel;
 			} while(!(pixel_array[i].compareAndSet(expected_CAS, current_pixel)));
-			//pixels[i] = 0xFFFFFFFF;
 		}
 		updatePixels();
 		//saveFrame("img-########.jpg");
