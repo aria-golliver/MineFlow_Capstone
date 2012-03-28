@@ -29,18 +29,42 @@ public class MinesweeperThread extends Thread {
 	// call start to start continually solving minesweeper boards
 	public void run(){
 		while(true){
+			// start a new game
 			board.new_game();
 			
+			// while you have not won or lost
 			while(!board.lost && !board.won){
 				boolean made_a_move = false;
 				
+				/*
+				 *  search for every cell looking for places that must be safe to middle_click
+				 *  	- you know it's safe when the number of set flags exactal equals
+				 *  	  the number of surrounding mines (indicated by board.view_cell(x, y)
+				 *  TODO: the surrounding_empty_spaces check might be unnecessary, but it also might save time, I have to test
+				 */
 				for(int x = 0; x<board.board_width; x++){
-					//System.out.println("1");
+					for(int y = 0; y<board.board_height; y++){
+						int surrounding_empty_spaces = board.total_arround_cell(x, y, "uncovered?", false);
+						int surrounding_flags = board.total_arround_cell(x, y, "flagged?");
+						
+						if(surrounding_empty_spaces > 0 && 
+						   surrounding_flags == board.view_cell(x, y) && 
+						   (boolean) board.board[x][y].get("uncovered?")){
+								made_a_move = board.middle_click(x, y) || made_a_move;
+						}
+					}
+				}
+				
+				/*
+				 * search for every cell that proves every open cell around it must be flagged
+				 * 		- you know they must be flagged if the # of empty spaces around the cell exactaly
+				 * 		  equals the numbers of surrounding mines (indicated by board.view_cell(x, y)
+				 */
+				for(int x = 0; x<board.board_width; x++){
 					for(int y = 0; y<board.board_height; y++){
 						if(board.view_cell(x, y) > 0){
 							
 							int surrounding_empty_spaces = board.total_arround_cell(x, y, "uncovered?", false);
-							//int surrounding_flags = board.total_arround_cell(x, y, "flagged?");
 							
 							if (surrounding_empty_spaces == board.view_cell(x,y)){
 								made_a_move = board.right_click(x-1, y-1) || made_a_move;
@@ -55,44 +79,16 @@ public class MinesweeperThread extends Thread {
 						}
 					}
 				}
+				
 				/*
-				try {
-					sleep(0);
-				} catch (InterruptedException e) {}*/
-				int total_clicks = 0;
-				if(!made_a_move){
-				for(int x = 0; x<board.board_width; x++){
-					//System.out.println("2");
-					for(int y = 0; y<board.board_height; y++){
-						int surrounding_empty_spaces = board.total_arround_cell(x, y, "uncovered?", false);
-						int surrounding_flags = board.total_arround_cell(x, y, "flagged?");
-						
-						if(surrounding_empty_spaces > 0 && 
-						   surrounding_flags == board.view_cell(x, y) && 
-						   (boolean) board.board[x][y].get("uncovered?")/* &&
-						   total_clicks < 100*/){
-							total_clicks++;
-								made_a_move = board.middle_click(x, y) || made_a_move;
-						}
-					}
-				}
-				}
+				 * if the solver wasn't able to find any new flags / clicks, it guesses randomly
+				 */
 				while(!made_a_move){
 					int x = (int) (Math.random() * board.board_width);
 					int y = (int) (Math.random() * board.board_height);
-					//System.out.println("guessing (" +x+","+y+")");
 					made_a_move = board.left_click(x, y);
 				}
 				board.won = board.check_win();
-				if(board.won){
-					//System.out.println("WON!");
-					//board.print_board();
-					//while(true){}
-				} else if(board.lost){
-					//System.out.println("LOST!");
-					//board.print_board();
-					//while(true){}
-				}
 			}
 		}
 	}
