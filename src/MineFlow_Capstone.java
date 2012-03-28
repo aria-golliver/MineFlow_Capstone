@@ -10,8 +10,7 @@ public class MineFlow_Capstone extends PApplet{
 	final static int THREADS = 3;
 	final static int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .99);
 	
-	
-	final static int[] frame_rates = {1,3,5,7,9,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57,60};
+	final static int[] frame_rates = {5,6,7,8,9,10,11,12,15,20,30,40,60,60};
 	int current_frame_rate = frame_rates.length - 1;
 	
 	MinesweeperThread[] threads;
@@ -22,8 +21,8 @@ public class MineFlow_Capstone extends PApplet{
 	float pixel_cell_ratio_height;
 	
 	public static void main(String args[]) {
-	    //PApplet.main(new String[] { "--present", "--bgcolor=#000000", "--hide-stop", "MineFlow_Capstone"});
-	    PApplet.main(new String[] { "MineFlow_Capstone"});
+	    PApplet.main(new String[] { "--present", "--bgcolor=#000000", "--hide-stop", "MineFlow_Capstone"});
+	    //PApplet.main(new String[] { "MineFlow_Capstone"});
 	}
 	
 	public void setup() {
@@ -59,13 +58,13 @@ public class MineFlow_Capstone extends PApplet{
 				expected_CAS = cell_color_array[i].get();
 				current_pixel = expected_CAS;
 			
-				seperated_colors[0] = (current_pixel & 0x00ff0000) >> 16;  //red
-				seperated_colors[1] = (current_pixel & 0x0000ff00) >> 8;   //green
-				seperated_colors[2] = (current_pixel & 0x000000ff) >> 0;   //blue
+				seperated_colors[0] = (current_pixel & 0x00ff0000) >> 16;  // red
+				seperated_colors[1] = (current_pixel & 0x0000ff00) >> 8;   // green
+				seperated_colors[2] = (current_pixel & 0x000000ff) >> 0;   // blue
 				
 				for(int color = 0; color<seperated_colors.length; color++){
-			        if(seperated_colors[color] - 0x5 > 0){
-			        	seperated_colors[color] -= 0x5;
+			        if(seperated_colors[color] - 0x2 > 0){
+			        	seperated_colors[color] -= 0x2;
 			        } else {
 			        	seperated_colors[color] = 0;
 			        }
@@ -93,8 +92,9 @@ public class MineFlow_Capstone extends PApplet{
 	}
 	
 	public void keyPressed() {
-		current_frame_rate = (current_frame_rate + 1) % frame_rates.length;
+		/*current_frame_rate = (current_frame_rate + 1) % frame_rates.length;
 		frameRate(frame_rates[current_frame_rate]);
-		System.out.println(frame_rates[current_frame_rate]);
+		System.out.println(frame_rates[current_frame_rate]);*/
+		exit();
 	}
 }
