@@ -40,16 +40,12 @@ public class Board {
 		
 		/* 
 		 * create the board
-		 * it is a 2 dimensional array of hash-maps
+		 * it is a 2 dimensional array of Cells
 		 */
 		
 		for(int x = 0; x < board_width; x++){
 			for(int y = 0; y < board_height; y++){
-				board[x][y] = new Cell();/*HashMap();
-				board[x][y].put("mine?", false);
-				board[x][y].put("flagged?", false);
-				board[x][y].put("uncovered?", false);
-				board[x][y].put("surrounding_mines", 0);*/
+				board[x][y] = new Cell();
 			}
 		}
 		
@@ -81,12 +77,10 @@ public class Board {
 		}
 	}
 	
-	/*public int total_arround_cell(int x, int y, String key){
-	}*/
-	
 	public int total_arround_cell(int x, int y, String key, boolean GET_TRUE_KEYS){
 		int surrounding_true_cells = 0;
 		switch(key){
+		// I wish to god I could just make this like I could with Clojure
 		case "mine?":
 			if(!out_of_bounds(x-1,y-1)) if((boolean) board[x-1][y-1].mine) surrounding_true_cells++;
 			if(!out_of_bounds(x  ,y-1)) if((boolean) board[x  ][y-1].mine) surrounding_true_cells++;
