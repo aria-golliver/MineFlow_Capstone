@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Board {
 	public boolean won, lost;
@@ -9,18 +10,18 @@ public class Board {
 	public final int height;
 	public final int total_mines;
 	private boolean first_move;
-	private int[] pixels;
+	private AtomicInteger[] pixels;
 	
-	public Board(int width, int height, int total_mines, int[] pixels){
+	public Board(int width, int height, int total_mines, AtomicInteger[] pixel_array){
 		this.width = width;
 		this.height = height;
 		this.total_mines = total_mines;
 
-		this.pixels = pixels;
+		this.pixels = pixel_array;
 		//generate_board();
 	}
 	
-	public Board(int[] pixels){
+	public Board(AtomicInteger[] pixels){
 		width = 30*24;
 		height = 16*24;
 		total_mines = (int) (99*24*24*1.05);
@@ -219,7 +220,7 @@ public class Board {
 				reveal(x-1,y+1);
 				reveal(x-1,y  );
 			}
-			won = check_win();
+			//won = check_win();
 			set_screen_pixels(x,y);
 			return true;
 		}
@@ -244,12 +245,12 @@ public class Board {
 		}
 		for(int iy = start_y; iy < end_y; iy++){
 			for(int ix = start_x; ix < end_x; ix++){
-				pixels[(iy * 1920) + ix] = color;
+				pixels[(iy * (1920)) + ix].set(color);
 			}
 		}
 	}
 
-	private boolean check_win() {
+	public boolean check_win() {
 		for(int x = 0; x < width; x++){
 			for(int y = 0; y < height; y++){
 				if(!(boolean) board[x][y].get("uncovered?") && !(boolean) board[x][y].get("mine?")) return false;
@@ -289,7 +290,7 @@ public class Board {
 	
 	
 	public static void main(String[] args){
-		Board test = new Board(new int[1]);
+		Board test = new Board(new AtomicInteger[1]);
 		test.new_game();
 		//test.print_board();
 		test.right_click(0,0);

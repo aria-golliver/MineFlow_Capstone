@@ -1,22 +1,23 @@
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 public class MinesweeperThread extends Thread {
 	final Board board;
-	final int[] pixels;
+	final AtomicInteger[] pixels;
 	final static int screen_width=1920;
 	final static int screen_height=1080;
 	final int board_width= 30 * 24;
-	final int board_height= 30 * 24;
-	final int mines = (int) (99 * 24 * 24 * 1.05);
+	final int board_height= 16 * 24;
+	final int mines = (int) (99 * 24 * 24);
 	
 	public static void main(String[] args){
-		MinesweeperThread ms = new MinesweeperThread(new int[screen_width * screen_height]);
+		MinesweeperThread ms = new MinesweeperThread(new AtomicInteger[screen_width * screen_height]);
 		while(true) ms.run();
 		
 	}
 	
-	public MinesweeperThread(int[] pixels){
-		board = new Board(board_width,board_height,mines,pixels);
-		this.pixels = pixels;
+	public MinesweeperThread(AtomicInteger[] pixel_array){
+		board = new Board(board_width,board_height,mines,pixel_array);
+		this.pixels = pixel_array;
 	}
 
 	// call start to start continually solving minesweeper boards
@@ -25,9 +26,6 @@ public class MinesweeperThread extends Thread {
 			board.new_game();
 			
 			while(!board.lost && !board.won){
-				/*try {
-					sleep(0);
-				} catch (InterruptedException e) {}*/
 				boolean made_a_move = false;
 				
 				for(int x = 0; x<board.width; x++){
@@ -51,7 +49,12 @@ public class MinesweeperThread extends Thread {
 						}
 					}
 				}
+				/*
+				try {
+					sleep(0);
+				} catch (InterruptedException e) {}*/
 				int total_clicks = 0;
+				if(!made_a_move){
 				for(int x = 0; x<board.width; x++){
 					//System.out.println("2");
 					for(int y = 0; y<board.height; y++){
@@ -60,11 +63,13 @@ public class MinesweeperThread extends Thread {
 						
 						if(surrounding_empty_spaces > 0 && 
 						   surrounding_flags == board.view_cell(x, y) && 
-						   (boolean) board.board[x][y].get("uncovered?") &&
-						   total_clicks++ < 30){
+						   (boolean) board.board[x][y].get("uncovered?")/* &&
+						   total_clicks < 100*/){
+							total_clicks++;
 								made_a_move = board.middle_click(x, y) || made_a_move;
 						}
 					}
+				}
 				}
 				while(!made_a_move){
 					int x = (int) (Math.random() * board.width);
@@ -72,6 +77,7 @@ public class MinesweeperThread extends Thread {
 					//System.out.println("guessing (" +x+","+y+")");
 					made_a_move = board.left_click(x, y);
 				}
+				board.won = board.check_win();
 				if(board.won){
 					//System.out.println("WON!");
 					//board.print_board();
