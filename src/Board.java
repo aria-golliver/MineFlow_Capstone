@@ -12,20 +12,20 @@ public class Board {
 	public final int screen_height;
 	public final int mines;
 	private boolean first_move;
-	private AtomicInteger[] pixels_array;
+	private AtomicInteger[] cell_color_array;
 	private final float pixel_cell_ratio_width;
 	private final float pixel_cell_ratio_height;
 	
-	public Board(int board_width, int board_height, int screen_width, int screen_height, int mines, AtomicInteger[] pixel_array){
+	public Board(int board_width, int board_height, int screen_width, int screen_height, int mines, AtomicInteger[] cell_color_array){
 		this.board_width = board_width;
 		this.board_height = board_height;
 		this.screen_width = screen_width;
 		this.screen_height = screen_height;
 		this.mines = mines;
-		pixel_cell_ratio_width = ((float)screen_width)/board_width;
-		pixel_cell_ratio_height = ((float)screen_height)/board_height;
+		this.pixel_cell_ratio_width = ((float)screen_width)/board_width;
+		this.pixel_cell_ratio_height = ((float)screen_height)/board_height;
 
-		this.pixels_array = pixel_array;
+		this.cell_color_array = cell_color_array;
 	}
 	
 	public void new_game(){
@@ -170,7 +170,7 @@ public class Board {
 		if(out_of_bounds(x,y)) return false;
 		if(!((boolean) board[x][y].uncovered) && !((boolean) board[x][y].flagged)){
 			board[x][y].flagged= true;
-			set_screen_pixels(x,y);
+			set_pixels_array(x,y);
 			return true;
 		}
 		return false;
@@ -228,22 +228,13 @@ public class Board {
 				reveal(x-1,y  );
 			}
 			// draw to pixels_array
-			set_screen_pixels(x,y);
+			set_pixels_array(x,y);
 			return true;
 		}
 	}
 	
-	private void set_screen_pixels(int x, int y) {
+	private void set_pixels_array(int x, int y) {
 		int color;
-		/* 
-		 * computers the rectangle to be colored
-		 * start[x,y] = [x  ,y  ] * screen/board_ratio[width,height]
-		 * end[x,y]   = [x+1,y+1] * screen/board_ratio[width,height]
-		 */
-		int start_x = (int) Math.floor((x  ) * pixel_cell_ratio_width);
-		int start_y = (int) Math.floor((y  ) * pixel_cell_ratio_height);
-		int end_x =   (int) Math.floor((x+1) * pixel_cell_ratio_width);
-		int end_y =   (int) Math.floor((y+1) * pixel_cell_ratio_height);
 		/*
 		 * the color of the rectangle is based on the uncovered cell's state
 		 * 		- flagged   = blue
@@ -265,11 +256,7 @@ public class Board {
 		/*
 		 * the pixel array is 1-dimensional, so the correct indice  is (y*width) + x instead of [x][y]
 		 */
-		for(int iy = start_y; iy < end_y; iy++){
-			for(int ix = start_x; ix < end_x; ix++){
-				pixels_array[(iy * (screen_width)) + ix].set(color);
-			}
-		}
+		cell_color_array[(y * (board_width)) + x].set(color);
 	}
 	
 	/*

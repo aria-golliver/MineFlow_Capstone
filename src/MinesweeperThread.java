@@ -3,22 +3,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MinesweeperThread extends Thread {
 	final Board board;
-	final AtomicInteger[] pixels;
+	final AtomicInteger[] cell_color_array;
 	final int screen_width,
 		      screen_height,
 			  board_width,
 			  board_height,
 			  mines;
 	
-	public MinesweeperThread(int board_width, int board_height, int screen_width, int screen_height, int mines, AtomicInteger[] pixel_array){
+	public MinesweeperThread(int board_width, int board_height, int screen_width, int screen_height, int mines, AtomicInteger[] cell_color_array){
 		this.board_width = board_width;
 		this.board_height = board_height;
 		this.screen_width = screen_width;
 		this.screen_height = screen_height;
 		this.mines = mines;
 		
-		board = new Board(board_width, board_height, screen_width, screen_height, mines, pixel_array);
-		this.pixels = pixel_array;
+		board = new Board(board_width, board_height, screen_width, screen_height, mines, cell_color_array);
+		this.cell_color_array = cell_color_array;
 	}
 
 	// call start to start continually solving minesweeper boards
