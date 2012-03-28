@@ -5,10 +5,10 @@ public class MineFlow_Capstone extends PApplet{
 	final static int MULTIPLIER = 24;
 	final static int WID = 30 * MULTIPLIER;
 	final static int HEI = 16 * MULTIPLIER;
-	final static int S_WID = 1920; //WID * 1;
-	final static int S_HEI = 1080; //HEI * 1;
+	final static int S_WID = WID * 2;
+	final static int S_HEI = HEI * 2;
 	final static int THREADS = 3;
-	final static int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .95);
+	final static int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .99);
 	
 	MinesweeperThread[] threads;
 	boolean first = true;
@@ -17,11 +17,12 @@ public class MineFlow_Capstone extends PApplet{
 	
 	public static void main(String args[]) {
 	    PApplet.main(new String[] { "--present", "--bgcolor=#000000", "--hide-stop", "MineFlow_Capstone"});
+	    //PApplet.main(new String[] { "MineFlow_Capstone"});
 	}
 	
 	public void setup() {
 		size(S_WID,S_HEI,P2D);
-		frameRate(60);
+		frameRate(24);
 		noCursor();
 		pixel_array = new AtomicInteger[S_WID*S_HEI];
 		for(int i = 0; i<pixel_array.length; i++){
@@ -53,8 +54,8 @@ public class MineFlow_Capstone extends PApplet{
 				seperated_colors[2] = (current_pixel & 0x000000ff) >> 0;   //blue
 				
 				for(int color = 0; color<seperated_colors.length; color++){
-			        if(seperated_colors[color] - 0x3 > 0){
-			        	seperated_colors[color] -= 0x3;
+			        if(seperated_colors[color] - 0x5 > 0){
+			        	seperated_colors[color] -= 0x5;
 			        } else {
 			        	seperated_colors[color] = 0;
 			        }
@@ -64,6 +65,9 @@ public class MineFlow_Capstone extends PApplet{
 			} while(!(pixel_array[i].compareAndSet(expected_CAS, current_pixel)));
 		}
 		updatePixels();
+		
+		// compute frame rate
+		if(frameCount % 24 == 0) System.out.println(frameRate);
 		//saveFrame("img-########.jpg");
 	}
 	
