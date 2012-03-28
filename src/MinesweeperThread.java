@@ -1,19 +1,14 @@
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
 public class MinesweeperThread extends Thread {
 	final Board board;
 	final AtomicInteger[] pixels;
-	final int screen_width;
-	final int screen_height;
-	final int board_width;
-	final int board_height;
-	final int mines;
-	
-	public static void main(String[] args){
-		//MinesweeperThread ms = new MinesweeperThread(new AtomicInteger[screen_width * screen_height]);
-		//while(true) ms.run();
-		
-	}
+	final int screen_width,
+		      screen_height,
+			  board_width,
+			  board_height,
+			  mines;
 	
 	public MinesweeperThread(int board_width, int board_height, int screen_width, int screen_height, int mines, AtomicInteger[] pixel_array){
 		this.board_width = board_width;
@@ -40,15 +35,12 @@ public class MinesweeperThread extends Thread {
 				 *  search for every cell looking for places that must be safe to middle_click
 				 *  	- you know it's safe when the number of set flags exactal equals
 				 *  	  the number of surrounding mines (indicated by board.view_cell(x, y)
-				 *  TODO: the surrounding_empty_spaces check might be unnecessary, but it also might save time, I have to test
 				 */
 				for(int x = 0; x<board.board_width; x++){
 					for(int y = 0; y<board.board_height; y++){
-						int surrounding_empty_spaces = board.total_arround_cell(x, y, "uncovered?", false);
 						int surrounding_flags = board.total_arround_cell(x, y, "flagged?");
 						
-						if(surrounding_empty_spaces > 0 && 
-						   surrounding_flags == board.view_cell(x, y) && 
+						if(surrounding_flags == board.view_cell(x, y) && 
 						   (boolean) board.board[x][y].get("uncovered?")){
 								made_a_move = board.middle_click(x, y) || made_a_move;
 						}
@@ -63,7 +55,6 @@ public class MinesweeperThread extends Thread {
 				for(int x = 0; x<board.board_width; x++){
 					for(int y = 0; y<board.board_height; y++){
 						if(board.view_cell(x, y) > 0){
-							
 							int surrounding_empty_spaces = board.total_arround_cell(x, y, "uncovered?", false);
 							
 							if (surrounding_empty_spaces == board.view_cell(x,y)){
