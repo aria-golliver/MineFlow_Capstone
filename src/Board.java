@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Board {
 	public boolean won, lost;
 	//HashMap mine_position;
-	public HashMap[][] board;
+	public Cell[][] board;
 
 	public final int board_width;
 	public final int board_height;
@@ -33,7 +33,7 @@ public class Board {
 	}
 	
 	private void generate_board(){
-		board = new HashMap[board_width][board_height];
+		board = new Cell[board_width][board_height];
 		first_move = true;
 		lost = false;
 		won = false;
@@ -45,11 +45,11 @@ public class Board {
 		
 		for(int x = 0; x < board_width; x++){
 			for(int y = 0; y < board_height; y++){
-				board[x][y] = new HashMap();
+				board[x][y] = new Cell();/*HashMap();
 				board[x][y].put("mine?", false);
 				board[x][y].put("flagged?", false);
 				board[x][y].put("uncovered?", false);
-				board[x][y].put("surrounding_mines", 0);
+				board[x][y].put("surrounding_mines", 0);*/
 			}
 		}
 		
@@ -60,8 +60,8 @@ public class Board {
 			int x = (int)(Math.random()*board_width);
 			int y = (int)(Math.random()*board_height);
 			
-			if(!((boolean) board[x][y].get("mine?"))){
-				board[x][y].put("mine?", true);
+			if(!((boolean) board[x][y].mine)){
+				board[x][y].mine = true;
 				mines_left--;
 			}
 		}
@@ -76,34 +76,48 @@ public class Board {
 	private void generate_surrounding_mines_metadata() {
 		for(int x = 0; x < board_width; x++){
 			for(int y = 0; y < board_height; y++){
-				board[x][y].put("surrounding_mines", total_arround_cell(x,y, "mine?"));
+				board[x][y].surrounding_mines = total_arround_cell(x,y, "mine?", true);
 			}
 		}
 	}
 	
-	public int total_arround_cell(int x, int y, String key){
-		int surrounding_true_cells = 0;
-		if(!out_of_bounds(x-1,y-1)) if((boolean) board[x-1][y-1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x  ,y-1)) if((boolean) board[x  ][y-1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x+1,y-1)) if((boolean) board[x+1][y-1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x+1,y  )) if((boolean) board[x+1][y  ].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x+1,y+1)) if((boolean) board[x+1][y+1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x  ,y+1)) if((boolean) board[x  ][y+1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x-1,y+1)) if((boolean) board[x-1][y+1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x-1,y  )) if((boolean) board[x-1][y  ].get(key)) surrounding_true_cells++;
-		return surrounding_true_cells;
-	}
+	/*public int total_arround_cell(int x, int y, String key){
+	}*/
 	
 	public int total_arround_cell(int x, int y, String key, boolean GET_TRUE_KEYS){
 		int surrounding_true_cells = 0;
-		if(!out_of_bounds(x-1,y-1)) if((boolean) board[x-1][y-1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x  ,y-1)) if((boolean) board[x  ][y-1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x+1,y-1)) if((boolean) board[x+1][y-1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x+1,y  )) if((boolean) board[x+1][y  ].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x+1,y+1)) if((boolean) board[x+1][y+1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x  ,y+1)) if((boolean) board[x  ][y+1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x-1,y+1)) if((boolean) board[x-1][y+1].get(key)) surrounding_true_cells++;
-		if(!out_of_bounds(x-1,y  )) if((boolean) board[x-1][y  ].get(key)) surrounding_true_cells++;
+		switch(key){
+		case "mine?":
+			if(!out_of_bounds(x-1,y-1)) if((boolean) board[x-1][y-1].mine) surrounding_true_cells++;
+			if(!out_of_bounds(x  ,y-1)) if((boolean) board[x  ][y-1].mine) surrounding_true_cells++;
+			if(!out_of_bounds(x+1,y-1)) if((boolean) board[x+1][y-1].mine) surrounding_true_cells++;
+			if(!out_of_bounds(x+1,y  )) if((boolean) board[x+1][y  ].mine) surrounding_true_cells++;
+			if(!out_of_bounds(x+1,y+1)) if((boolean) board[x+1][y+1].mine) surrounding_true_cells++;
+			if(!out_of_bounds(x  ,y+1)) if((boolean) board[x  ][y+1].mine) surrounding_true_cells++;
+			if(!out_of_bounds(x-1,y+1)) if((boolean) board[x-1][y+1].mine) surrounding_true_cells++;
+			if(!out_of_bounds(x-1,y  )) if((boolean) board[x-1][y  ].mine) surrounding_true_cells++;
+			break;
+		case "uncovered?":
+			if(!out_of_bounds(x-1,y-1)) if((boolean) board[x-1][y-1].uncovered) surrounding_true_cells++;
+			if(!out_of_bounds(x  ,y-1)) if((boolean) board[x  ][y-1].uncovered) surrounding_true_cells++;
+			if(!out_of_bounds(x+1,y-1)) if((boolean) board[x+1][y-1].uncovered) surrounding_true_cells++;
+			if(!out_of_bounds(x+1,y  )) if((boolean) board[x+1][y  ].uncovered) surrounding_true_cells++;
+			if(!out_of_bounds(x+1,y+1)) if((boolean) board[x+1][y+1].uncovered) surrounding_true_cells++;
+			if(!out_of_bounds(x  ,y+1)) if((boolean) board[x  ][y+1].uncovered) surrounding_true_cells++;
+			if(!out_of_bounds(x-1,y+1)) if((boolean) board[x-1][y+1].uncovered) surrounding_true_cells++;
+			if(!out_of_bounds(x-1,y  )) if((boolean) board[x-1][y  ].uncovered) surrounding_true_cells++;
+			break;
+		case "flagged?":
+			if(!out_of_bounds(x-1,y-1)) if((boolean) board[x-1][y-1].flagged) surrounding_true_cells++;
+			if(!out_of_bounds(x  ,y-1)) if((boolean) board[x  ][y-1].flagged) surrounding_true_cells++;
+			if(!out_of_bounds(x+1,y-1)) if((boolean) board[x+1][y-1].flagged) surrounding_true_cells++;
+			if(!out_of_bounds(x+1,y  )) if((boolean) board[x+1][y  ].flagged) surrounding_true_cells++;
+			if(!out_of_bounds(x+1,y+1)) if((boolean) board[x+1][y+1].flagged) surrounding_true_cells++;
+			if(!out_of_bounds(x  ,y+1)) if((boolean) board[x  ][y+1].flagged) surrounding_true_cells++;
+			if(!out_of_bounds(x-1,y+1)) if((boolean) board[x-1][y+1].flagged) surrounding_true_cells++;
+			if(!out_of_bounds(x-1,y  )) if((boolean) board[x-1][y  ].flagged) surrounding_true_cells++;
+			break;
+		}
 		
 		if(GET_TRUE_KEYS) return surrounding_true_cells;
 		return 8 - surrounding_true_cells;
@@ -111,13 +125,13 @@ public class Board {
 	
 	private boolean is_mine(int x, int y){
 		if(out_of_bounds(x,y)) return false;
-		return (boolean) board[x][y].get("mine?");
+		return (boolean) board[x][y].mine;
 	}
 	
 	public boolean left_click(int x, int y){
 		if(out_of_bounds(x,y) || won || lost) return false;
 		boolean made_a_move = false;
-		if(!(boolean) board[x][y].get("flagged?")) made_a_move = reveal(x,y);
+		if(!(boolean) board[x][y].flagged) made_a_move = reveal(x,y);
 		return made_a_move;
 	}
 	
@@ -160,8 +174,8 @@ public class Board {
 	 */
 	private boolean toggle_flag(int x, int y){
 		if(out_of_bounds(x,y)) return false;
-		if(!((boolean) board[x][y].get("uncovered?")) && !((boolean) board[x][y].get("flagged?"))){
-			board[x][y].put("flagged?", true);
+		if(!((boolean) board[x][y].uncovered) && !((boolean) board[x][y].flagged)){
+			board[x][y].flagged= true;
 			set_screen_pixels(x,y);
 			return true;
 		}
@@ -175,17 +189,17 @@ public class Board {
 	private boolean reveal(int x, int y){
 		if(out_of_bounds(x,y) || won || lost) return false;
 		
-		if((boolean) board[x][y].get("mine?") && !((boolean) board[x][y].get("flagged?"))){
+		if((boolean) board[x][y].mine && !((boolean) board[x][y].flagged)){
 			//if you hit a mine
 			if(first_move){
 				first_move = false;
 				// if it was your first move, move the mine the first cell w/o a mine starting at the top left
-				board[x][y].put("mine?", false);
+				board[x][y].mine = false;
 				boolean moved = false;
 				for(int iy = 0; iy < board_height; iy++){
 					for(int ix = 0; ix < board_width && !moved; ix++){
-						if(!(boolean)board[ix][iy].get("mine?")){
-							board[ix][iy].put("mine?", true);
+						if(!(boolean)board[ix][iy].mine){
+							board[ix][iy].mine = true;
 							moved = true;
 						}
 					}
@@ -201,14 +215,14 @@ public class Board {
 		first_move = false;
 		
 		// if you didn't hit a mine...
-		if((boolean) board[x][y].get("uncovered?")){
+		if((boolean) board[x][y].uncovered){
 			// if it's already uncovered, return false
 			return false;
 		} else {
 			// else reveal it
-			board[x][y].put("uncovered?", true);
+			board[x][y].uncovered = true;
 			// and if the cell has no surrounding mines
-			if((int) board[x][y].get("surrounding_mines") == 0){
+			if((int) board[x][y].surrounding_mines == 0){
 				// reveal all adjacent cells
 				reveal(x-1,y-1);
 				reveal(x  ,y-1);
@@ -242,10 +256,10 @@ public class Board {
 		 * 		- uncovered	= brighter grey based on number of surrounding mines
 		 * 		- else 		= black 
 		 */
-		if((boolean) board[x][y].get("flagged?")){
+		if((boolean) board[x][y].flagged){
 			color = 0xFF3232FF;
-		} else if((boolean) board[x][y].get("uncovered?")){
-			int surrounding_mines = (int) board[x][y].get("surrounding_mines");
+		} else if((boolean) board[x][y].uncovered){
+			int surrounding_mines = (int) board[x][y].surrounding_mines;
 			int alpha = 0xFF;
 			int grey = 0xFF/8 * surrounding_mines;
 			color = (alpha << 24) + (grey << 16) + (grey << 8) + (grey << 0);
@@ -255,7 +269,7 @@ public class Board {
 		}
 		
 		/*
-		 * the pixel array is 1-dimensional, so the indecie is (y*width) + x instead of [x][y]
+		 * the pixel array is 1-dimensional, so the correct indice  is (y*width) + x instead of [x][y]
 		 */
 		for(int iy = start_y; iy < end_y; iy++){
 			for(int ix = start_x; ix < end_x; ix++){
@@ -270,7 +284,7 @@ public class Board {
 	public boolean check_win() {
 		for(int x = 0; x < board_width; x++){
 			for(int y = 0; y < board_height; y++){
-				if(!(boolean) board[x][y].get("uncovered?") && !(boolean) board[x][y].get("mine?")) return false;
+				if(!(boolean) board[x][y].uncovered && !(boolean) board[x][y].mine) return false;
 			}
 		}
 		return true;
@@ -281,12 +295,12 @@ public class Board {
 		for(int y = 0; y < board_height; y++){
 			System.out.print(y+"| ");
 			for(int x = 0; x < board_width; x++){
-				if((boolean) board[x][y].get("flagged?")){
+				if((boolean) board[x][y].flagged){
 					System.out.print(" F");
-				} else if((boolean) board[x][y].get("mine?")){
+				} else if((boolean) board[x][y].mine){
 					System.out.print(" #");
-				} else if((boolean) board[x][y].get("uncovered?")){
-					int surrounding_mines = (int) board[x][y].get("surrounding_mines");
+				} else if((boolean) board[x][y].uncovered){
+					int surrounding_mines = (int) board[x][y].surrounding_mines;
 					if(surrounding_mines == 0){
 						System.out.print(" .");
 					} else {
@@ -312,8 +326,8 @@ public class Board {
 	 */
 	public int view_cell(int x, int y) {
 		if(out_of_bounds(x,y)) return -1;
-		if((boolean) board[x][y].get("uncovered?")){
-			return (int) board[x][y].get("surrounding_mines");
+		if((boolean) board[x][y].uncovered){
+			return (int) board[x][y].surrounding_mines;
 		}
 		return -1;
 	}

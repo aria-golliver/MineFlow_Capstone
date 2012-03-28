@@ -68,6 +68,6 @@ public class MineFlow_Capstone extends PApplet{
 	}
 	
 	public void keyPressed() {
-		exit();
+		//exit();
 	}
 }

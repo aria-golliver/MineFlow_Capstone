@@ -38,10 +38,10 @@ public class MinesweeperThread extends Thread {
 				 */
 				for(int x = 0; x<board.board_width; x++){
 					for(int y = 0; y<board.board_height; y++){
-						int surrounding_flags = board.total_arround_cell(x, y, "flagged?");
+						int surrounding_flags = board.total_arround_cell(x, y, "flagged?", true);
 						
 						if(surrounding_flags == board.view_cell(x, y) && 
-						   (boolean) board.board[x][y].get("uncovered?")){
+						   (boolean) board.board[x][y].uncovered){
 								made_a_move = board.middle_click(x, y) || made_a_move;
 						}
 					}
