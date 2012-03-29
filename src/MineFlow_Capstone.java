@@ -2,15 +2,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import processing.core.*;
 
 public class MineFlow_Capstone extends PApplet{
-	final static int MULTIPLIER = 24;
-	final static int WID = 30 * MULTIPLIER;
-	final static int HEI = 16 * MULTIPLIER;
-	final static int S_WID = 1920;//WID * 2;
-	final static int S_HEI = 1080;///HEI * 2;
-	final static int THREADS = 3;
-	final static int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .99);
+	final int MULTIPLIER = 24;
+	final int WID = 30 * MULTIPLIER;
+	final int HEI = 16 * MULTIPLIER;
+	final int S_WID = screen.width;//WID * 2;
+	final int S_HEI = screen.height;///HEI * 2;
+	final int THREADS = 3;
+	final int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .99);
 	
-	final static int[] frame_rates = {5,6,7,8,9,10,11,12,15,20,30,40,60,60};
+	final static int[] frame_rates = {24};//{5,6,7,8,9,10,11,12,15,20,30,40,60,60};
 	int current_frame_rate = frame_rates.length - 1;
 	
 	MinesweeperThread[] threads;
@@ -22,7 +22,7 @@ public class MineFlow_Capstone extends PApplet{
 	
 	public static void main(String args[]) {
 	    PApplet.main(new String[] { "--present", "--bgcolor=#000000", "--hide-stop", "MineFlow_Capstone"});
-	    //PApplet.main(new String[] { "MineFlow_Capstone"});
+	    //PApplet.main(new String[] {"MineFlow_Capstone"});
 	}
 	
 	public void setup() {
@@ -85,7 +85,7 @@ public class MineFlow_Capstone extends PApplet{
 		}
 		updatePixels();
 		
-		// display frame rate aprox. every 1 second
+		// print frame rate aprox. every 1 second
 		if(frameCount % frame_rates[current_frame_rate] == 0) System.out.println(frameRate);
 		
 		//saveFrame("img-########.jpg");
