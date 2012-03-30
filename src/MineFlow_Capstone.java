@@ -74,9 +74,9 @@ public class MineFlow_Capstone extends PApplet{
 				seperated_colors[1] = (current_pixel & 0x0000ff00) >> 8;   // green
 				seperated_colors[2] = (current_pixel & 0x000000ff) >> 0;   // blue
 				
-				for(int color = 0; color<seperated_colors.length; color++){
-			        if(seperated_colors[color] - 0x2 > 0){
-			        	seperated_colors[color] -= 0x2;
+				for(int color = 0; color < 3; color++){
+			        if(seperated_colors[color] - 0x3 > 0){
+			        	seperated_colors[color] -= 0x3;
 			        } else {
 			        	seperated_colors[color] = 0;
 			        }
