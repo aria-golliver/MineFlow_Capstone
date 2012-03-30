@@ -97,4 +97,17 @@ public class MineFlow_Capstone extends PApplet{
 		}
 		updatePixels();
 	}
+	
+	public void keyPressed(){
+		if(frameCount>1) exit();
+		System.out.println(frameCount);
+	}
+	
+	public void mouseMoved(){
+		if(frameCount>1) exit();
+	}
+	
+	public void mousePressed(){
+		if(frameCount>1) exit();
+	}
 }
