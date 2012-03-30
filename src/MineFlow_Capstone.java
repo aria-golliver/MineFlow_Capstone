@@ -1,16 +1,16 @@
 import java.util.concurrent.atomic.AtomicInteger;
 import processing.core.*;
 
+@SuppressWarnings("serial")
 public class MineFlow_Capstone extends PApplet{
-	private static final long serialVersionUID = -6121944788351270304L;
 
 	final int THREADS = 3;
 	
 	final int MULTIPLIER = 24;
 	final int WID = 30 * MULTIPLIER;
 	final int HEI = 16 * MULTIPLIER;
-	final int S_WID = screenWidth;
-	final int S_HEI = screenHeight;
+	final int S_WID = screen.width;
+	final int S_HEI = screen.height;
 	final int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .99);
 	
 	MinesweeperThread[] threads;
@@ -21,7 +21,6 @@ public class MineFlow_Capstone extends PApplet{
 	float pixel_cell_ratio_height;
 	
 	public static void main(String args[]) {
-		
 	    PApplet.main(new String[] { "--present", "--bgcolor=#000000", "--hide-stop", "MineFlow_Capstone"});
 	    
 	    /*
@@ -61,7 +60,6 @@ public class MineFlow_Capstone extends PApplet{
 	}
 	
 	public void draw(){
-		
 		int current_pixel = 0;
 		int seperated_colors[] = new int[3];
 		if(frameCount == 1) loadPixels();
