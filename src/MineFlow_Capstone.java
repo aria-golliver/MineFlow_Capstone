@@ -42,10 +42,23 @@ public class MineFlow_Capstone extends PApplet{
 		frameRate(24);
 		noCursor();
 		
+		/*
+		 * one AtomicInteger for every cell that minesweeper is played against
+		 * Each cell associates with a color, which is set by the minesweeper threads, and dimmed by the main thread
+		 * the main thread dims the cell, then copies it to the pixels[] array before updating the frame
+		 */
 		cell_color_array = new AtomicInteger[WID*HEI];
 		for(int i = 0; i<cell_color_array.length; i++){
 			cell_color_array[i] = new AtomicInteger(0x0);
 		}
+		
+		/*
+		 * create and start the minesweeper solving threads
+		 * each thread has the same width/height/mine count for the minesweeper board
+		 * and is given a reference to the cell_color_array
+		 * 
+		 * TODO: make each thread have a different number of mines, for cool behaviors
+		 */
 		
 		threads = new MinesweeperThread[THREADS];
 		for(int i = 0; i<threads.length; i++){
@@ -55,8 +68,10 @@ public class MineFlow_Capstone extends PApplet{
 			threads[i].start();
 		}
 		
-
-		this.pixel_cell_ratio_width = ((float)S_WID)/WID;
+		/*
+		 * computes the size the cell will be when drawn to the screen
+		 */
+		this.pixel_cell_ratio_width = ((float)S_WID)/WID; 
 		this.pixel_cell_ratio_height = ((float)S_HEI)/HEI;
 	}
 	
@@ -64,6 +79,15 @@ public class MineFlow_Capstone extends PApplet{
 		int current_pixel = 0;
 		int seperated_colors[] = new int[3];
 		if(frameCount == 1) loadPixels();
+		
+		/*
+		 * for  each cell color,
+		 * it saves the current color (for compare and swap)
+		 * then separates the red, green, and blue components
+		 * it dims each component, splices them back together
+		 * then, if no minesweeper solver has touched the current cell it writes it's changes
+		 * if the CAS fails, it rewinds and tries again 
+		 */
 		for(int i = 0; i<cell_color_array.length; i++){
 			int expected_CAS;
 			do{
@@ -74,21 +98,29 @@ public class MineFlow_Capstone extends PApplet{
 				seperated_colors[1] = (current_pixel & 0x0000ff00) >> 8;   // green
 				seperated_colors[2] = (current_pixel & 0x000000ff) >> 0;   // blue
 				
-				for(int color = 0; color < 3; color++){
+				for(int color = 0; color < 3; color++){					   // this hopefully gets unrolled...
 			        if(seperated_colors[color] - 0x3 > 0){
 			        	seperated_colors[color] -= 0x3;
 			        } else {
 			        	seperated_colors[color] = 0;
 			        }
 				}
-				current_pixel = color(seperated_colors[0],seperated_colors[1],seperated_colors[2]);
+				current_pixel = color(seperated_colors[0],seperated_colors[1],seperated_colors[2]);		//splice the colors back together
 			} while(!(cell_color_array[i].compareAndSet(expected_CAS, current_pixel)));
+			
+			/* 
+			 * computes the start and end screen-coordinates of the rectangle for the cell it's drawing
+			 * then writes it to the pixels[] array
+			 * because the cell_color_array is atomic, we are assured the drawing phase wont overwrite any changes made by the minesweeper solving threads
+			 * but the threads can conflict no problem, but that data loss isn't really a problem
+			 */
 			final int px = i % WID;
 			final int py = i / WID;
 			final int start_x = (int) (px * pixel_cell_ratio_width);
 			final int start_y = (int) (py * pixel_cell_ratio_height);
 			final int end_x =   (int) ((px+1) * pixel_cell_ratio_width);
 			final int end_y =   (int) ((py+1) * pixel_cell_ratio_height);
+			
 			for(int iy = start_y; iy <end_y; iy++){
 				for(int ix = start_x; ix <end_x; ix++){
 					pixels[iy * S_WID + ix] = current_pixel;
