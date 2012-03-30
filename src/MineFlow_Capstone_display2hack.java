@@ -1,14 +1,13 @@
 import java.util.concurrent.atomic.AtomicInteger;
 import processing.core.*;
 
-public class MineFlow_Capstone extends PApplet{
-	final int THREADS = 3;
-	
+public class MineFlow_Capstone_display2hack extends PApplet{
 	final int MULTIPLIER = 24;
 	final int WID = 30 * MULTIPLIER;
 	final int HEI = 16 * MULTIPLIER;
-	final int S_WID = screen.width;
-	final int S_HEI = screen.height;
+	final int S_WID = 1920;
+	final int S_HEI = 1200;
+	final int THREADS = 3;
 	final int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .99);
 	
 	MinesweeperThread[] threads;
@@ -17,24 +16,6 @@ public class MineFlow_Capstone extends PApplet{
 	AtomicInteger[] cell_color_array;
 	float pixel_cell_ratio_width;
 	float pixel_cell_ratio_height;
-	
-	public static void main(String args[]) {
-		
-	    PApplet.main(new String[] { "--present", "--bgcolor=#000000", "--hide-stop", "MineFlow_Capstone"});
-	    
-	    /*
-	     * uncomment the following line if you want it to run on two displays
-	     * make sure you go into MineFlow_Capstone_display2hack and switch the height/width
-	     * to exactly that of your second monitor
-	     * 
-	     * I use an application called ShiftWindow to shunt the new screen over to the other monitor, because processing's
-	     * --display=2 command was doing nothing
-	     *
-	     * ---------
-	    	PApplet.main(new String[] { "--present", "--bgcolor=#000000", "--hide-stop", "MineFlow_Capstone_display2hack"});
-	     * ---------
-	     */
-	}
 	
 	public void setup() {
 		size(S_WID,S_HEI,P2D);
