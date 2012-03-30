@@ -1,4 +1,3 @@
-import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Board {
@@ -13,8 +12,6 @@ public class Board {
 	public final int mines;
 	private boolean first_move;
 	private AtomicInteger[] cell_color_array;
-	private final float pixel_cell_ratio_width;
-	private final float pixel_cell_ratio_height;
 	
 	public Board(int board_width, int board_height, int screen_width, int screen_height, int mines, AtomicInteger[] cell_color_array){
 		this.board_width = board_width;
@@ -22,8 +19,6 @@ public class Board {
 		this.screen_width = screen_width;
 		this.screen_height = screen_height;
 		this.mines = mines;
-		this.pixel_cell_ratio_width = ((float)screen_width)/board_width;
-		this.pixel_cell_ratio_height = ((float)screen_height)/board_height;
 
 		this.cell_color_array = cell_color_array;
 	}
@@ -115,11 +110,6 @@ public class Board {
 		
 		if(GET_TRUE_KEYS) return surrounding_true_cells;
 		return 8 - surrounding_true_cells;
-	}
-	
-	private boolean is_mine(int x, int y){
-		if(out_of_bounds(x,y)) return false;
-		return (boolean) board[x][y].mine;
 	}
 	
 	public boolean left_click(int x, int y){

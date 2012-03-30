@@ -2,13 +2,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import processing.core.*;
 
 public class MineFlow_Capstone extends PApplet{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6121944788351270304L;
+
 	final int THREADS = 3;
 	
 	final int MULTIPLIER = 24;
 	final int WID = 30 * MULTIPLIER;
 	final int HEI = 16 * MULTIPLIER;
-	final int S_WID = screen.width;
-	final int S_HEI = screen.height;
+	final int S_WID = screenWidth;
+	final int S_HEI = screenHeight;
 	final int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .99);
 	
 	MinesweeperThread[] threads;

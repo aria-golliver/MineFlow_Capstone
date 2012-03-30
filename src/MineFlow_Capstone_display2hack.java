@@ -2,6 +2,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import processing.core.*;
 
 public class MineFlow_Capstone_display2hack extends PApplet{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7239207479988750216L;
 	final int MULTIPLIER = 24;
 	final int WID = 30 * MULTIPLIER;
 	final int HEI = 16 * MULTIPLIER;
