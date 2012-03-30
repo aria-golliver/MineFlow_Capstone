@@ -1,4 +1,4 @@
-"Cellular atomata" type creative coding project that I came up with and have spent most of my HS senior year working on.
+"Cellular atomata" creative coding project that I came up with and have spent most of my HS senior year working on.
 
 Basically, the cells that are 'lit up' are all chosen by huge games of minesweeper that the computer plays in the background.
 Usually multiple games are being played at once (I usually run 3 minesweeper-solver threads) which causes overlap and interference in the output.
