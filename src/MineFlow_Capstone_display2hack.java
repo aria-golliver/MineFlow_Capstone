@@ -10,7 +10,6 @@ import processing.core.*;
 
 @SuppressWarnings("serial")
 public class MineFlow_Capstone_display2hack extends PApplet{
-
 	final int THREADS = 3;
 	
 	final int MULTIPLIER = 24;
@@ -57,6 +56,7 @@ public class MineFlow_Capstone_display2hack extends PApplet{
 		for(int i = 0; i<threads.length; i++){
 			threads[i] = new MinesweeperThread(WID,HEI,S_WID,S_HEI,MINES,cell_color_array);
 		}
+		
 		for(int i = 0; i<threads.length; i++){
 			threads[i].start();
 		}
@@ -89,6 +89,7 @@ public class MineFlow_Capstone_display2hack extends PApplet{
 				}
 				current_pixel = color(seperated_colors[0],seperated_colors[1],seperated_colors[2]);
 			} while(!(cell_color_array[i].compareAndSet(expected_CAS, current_pixel)));
+			
 			final int px = i % WID;
 			final int py = i / WID;
 			final int start_x = (int) (px * pixel_cell_ratio_width);
