@@ -9,14 +9,13 @@ public class MineFlow_Capstone extends PApplet{
 	final int MULTIPLIER = 24;
 	final int WID = 30 * MULTIPLIER;
 	final int HEI = 16 * MULTIPLIER;
-	final int S_WID = screen.width;
-	final int S_HEI = screen.height;
 	final int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .99);
 	
 	MinesweeperThread[] threads;
-	boolean first = true;
 	
 	AtomicInteger[] cell_color_array;
+	final int S_WID = screen.width;
+	final int S_HEI = screen.height;
 	float pixel_cell_ratio_width;
 	float pixel_cell_ratio_height;
 	
@@ -31,16 +30,18 @@ public class MineFlow_Capstone extends PApplet{
 	     * I use an application called ShiftWindow to shunt the new screen over to the other monitor, because processing's
 	     * --display=2 command was doing nothing
 	     *
-	     * ---------
+	     * ---------*
 	    	PApplet.main(new String[] { "--present", "--bgcolor=#000000", "--hide-stop", "MineFlow_Capstone_display2hack"});
-	     * ---------
+	     /* ---------
 	     */
 	}
 	
 	public void setup() {
 		size(S_WID,S_HEI,P2D);
+		
 		frameRate(24);
 		noCursor();
+		
 		cell_color_array = new AtomicInteger[WID*HEI];
 		for(int i = 0; i<cell_color_array.length; i++){
 			cell_color_array[i] = new AtomicInteger(0x0);
