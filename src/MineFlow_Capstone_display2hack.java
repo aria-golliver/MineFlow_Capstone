@@ -25,7 +25,9 @@ public class MineFlow_Capstone_display2hack extends PApplet{
 	MinesweeperThread[] threads;
 	
 	AtomicInteger[] cell_color_array;
+	@SuppressWarnings("deprecation")
 	final int S_WID = screen.width;
+	@SuppressWarnings("deprecation")
 	final int S_HEI = screen.height;
 	float pixel_cell_ratio_width;
 	float pixel_cell_ratio_height;
