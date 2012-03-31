@@ -143,12 +143,11 @@ public class MineFlow_Capstone extends PApplet{
 		}
 		updatePixels();
 		
-		if(frameCount % frameRate == 0) out.println(frameRate); // frame rate is printed aprox. once every second
+		if(frameCount % 24 == 0) out.println(frameRate); // frame rate is printed at max every onc every second
 	}
 	
 	public void keyPressed(){
 		if(frameCount>1) exit();
-		System.out.println(frameCount);
 	}
 	
 	public void mouseMoved(){
