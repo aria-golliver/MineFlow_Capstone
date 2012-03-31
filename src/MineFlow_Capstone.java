@@ -63,7 +63,6 @@ public class MineFlow_Capstone extends PApplet{
 		 * each thread has the same width/height/mine count for the minesweeper board
 		 * and is given a reference to the cell_color_array
 		 */
-
 		threads = new MinesweeperThread[THREADS];
 		for(int i = 0; i<threads.length; i++){
 			/*
