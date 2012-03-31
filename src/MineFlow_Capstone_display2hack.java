@@ -5,18 +5,22 @@
  * set S_WID and S_HEI to your second monitor's screen width and height
  */
 
+import static java.lang.System.out;
 import java.util.concurrent.atomic.AtomicInteger;
 import processing.core.*;
 
 @SuppressWarnings("serial")
 public class MineFlow_Capstone_display2hack extends PApplet{
-
 	final int THREADS = 3;
 	
 	final int MULTIPLIER = 24;
 	final int WID = 30 * MULTIPLIER;
 	final int HEI = 16 * MULTIPLIER;
 	final int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .99);
+	
+	final double[] MINE_RATIOS = new double[] { 1 , .9 , 1.1 , 1 , 1 , 1.1 }; // the number of mines/thread is multiplied by one of these, in order, so each thread solves at a different rate
+	
+	final int DIM_AMOUNT = 0x3; // each pixel is dimmed by this amount each frame
 	
 	MinesweeperThread[] threads;
 	
@@ -69,8 +73,16 @@ public class MineFlow_Capstone_display2hack extends PApplet{
 		
 		threads = new MinesweeperThread[THREADS];
 		for(int i = 0; i<threads.length; i++){
-			threads[i] = new MinesweeperThread(WID,HEI,S_WID,S_HEI,MINES,cell_color_array);
+			/*
+			 * each thread requires to be provided:
+			 * 	-	width/height of minesweeper board
+			 * 	-	width/height of the output screen
+			 * 	-	number of mines, which I multiply by a modifier so some threads go faster/slower than others
+			 * 	-	a reference to the cell_color_array, which each thread atomically writes to. Each cell of this array corresponds to a cell on the minesweeper board
+			 */
+			threads[i] = new MinesweeperThread(WID,HEI,S_WID,S_HEI,(int) (MINES * MINE_RATIOS[i % MINE_RATIOS.length]),cell_color_array);
 		}
+		
 		for(int i = 0; i<threads.length; i++){
 			threads[i].start();
 		}
@@ -82,13 +94,15 @@ public class MineFlow_Capstone_display2hack extends PApplet{
 		this.pixel_cell_ratio_height = ((float)S_HEI)/HEI;
 	}
 	
+	
 	public void draw(){
 		int current_pixel = 0;
+		// seperated_colors stores the red/blue/green components of each cell
 		int seperated_colors[] = new int[3];
 		if(frameCount == 1) loadPixels();
 		
 		/*
-		 * for  each cell color,
+		 * for each cell color,
 		 * it saves the current color (for compare and swap)
 		 * then separates the red, green, and blue components
 		 * it dims each component, splices them back together
@@ -106,8 +120,8 @@ public class MineFlow_Capstone_display2hack extends PApplet{
 				seperated_colors[2] = (current_pixel & 0x000000ff) >> 0;   // blue
 				
 				for(int color = 0; color < 3; color++){					   // this hopefully gets unrolled...
-			        if(seperated_colors[color] - 0x3 > 0){
-			        	seperated_colors[color] -= 0x3;
+			        if(seperated_colors[color] - DIM_AMOUNT > 0){
+			        	seperated_colors[color] -= DIM_AMOUNT;
 			        } else {
 			        	seperated_colors[color] = 0;
 			        }
@@ -135,5 +149,7 @@ public class MineFlow_Capstone_display2hack extends PApplet{
 			}
 		}
 		updatePixels();
+		
+		if(frameCount % frameRate == 0) out.println(frameRate); // frame rate is printed aprox. once every second
 	}
 }

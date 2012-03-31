@@ -1,4 +1,5 @@
 import java.util.concurrent.atomic.AtomicInteger;
+import static java.lang.System.out;
 
 public class Board {
 	public boolean won, lost;
@@ -262,26 +263,26 @@ public class Board {
 	}
 
 	public void print_board(){
-		System.out.println("    0 1 2 3 4 5 6 7 8 9");
+		out.println("    0 1 2 3 4 5 6 7 8 9");
 		for(int y = 0; y < board_height; y++){
-			System.out.print(y+"| ");
+			out.print(y+"| ");
 			for(int x = 0; x < board_width; x++){
 				if((boolean) board[x][y].flagged){
-					System.out.print(" F");
+					out.print(" F");
 				} else if((boolean) board[x][y].mine){
-					System.out.print(" #");
+					out.print(" #");
 				} else if((boolean) board[x][y].uncovered){
 					int surrounding_mines = (int) board[x][y].surrounding_mines;
 					if(surrounding_mines == 0){
-						System.out.print(" .");
+						out.print(" .");
 					} else {
-						System.out.print(" " + surrounding_mines);
+						out.print(" " + surrounding_mines);
 					}
 				} else {
-					System.out.print(" #");
+					out.print(" #");
 				}
 			}
-			System.out.println();
+			out.println();
 		}
 	}
 	/*

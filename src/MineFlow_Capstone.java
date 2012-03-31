@@ -1,3 +1,4 @@
+import static java.lang.System.out;
 import java.util.concurrent.atomic.AtomicInteger;
 import processing.core.*;
 
@@ -141,5 +142,7 @@ public class MineFlow_Capstone extends PApplet{
 			}
 		}
 		updatePixels();
+		
+		if(frameCount % frameRate == 0) out.println(frameRate); // frame rate is printed aprox. once every second
 	}
 }
