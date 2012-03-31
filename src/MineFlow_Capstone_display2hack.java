@@ -149,14 +149,14 @@ public class MineFlow_Capstone_display2hack extends PApplet{
 	}
 
 	public void keyPressed(){
-		//if(frameCount>1) exit();
+		if(frameCount>1) exit();
 	}
 
 	public void mouseMoved(){
-		//if(frameCount>1) exit();
+		if(frameCount>1) exit();
 	}
 
 	public void mousePressed(){
-		//if(frameCount>1) exit();
+		if(frameCount>1) exit();
 	}
 }
