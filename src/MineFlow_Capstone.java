@@ -9,7 +9,7 @@ public class MineFlow_Capstone extends PApplet{
 	final int MULTIPLIER = 24;
 	final int WID = 30 * MULTIPLIER;
 	final int HEI = 16 * MULTIPLIER;
-	final int MINES = (int) (99 * MULTIPLIER * MULTIPLIER * .99);
+	final int MINES = (int) (99 * MULTIPLIER * MULTIPLIER);
 	
 	final double[] MINE_RATIOS = new double[] { 1 , .9 , 1.1 , 1 , 1 , 1.1 }; // the number of mines/thread is multiplied by one of these, in order, so each thread solves at a different rate
 	
