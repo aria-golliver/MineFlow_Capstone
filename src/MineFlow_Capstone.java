@@ -62,10 +62,7 @@ public class MineFlow_Capstone extends PApplet{
 		 * create and start the minesweeper solving threads
 		 * each thread has the same width/height/mine count for the minesweeper board
 		 * and is given a reference to the cell_color_array
-		 * 
-		 * TODO: make each thread have a different number of mines, for cool behaviors
 		 */
-
 		threads = new MinesweeperThread[THREADS];
 		for(int i = 0; i<threads.length; i++){
 			/*
