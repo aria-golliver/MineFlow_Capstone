@@ -119,7 +119,7 @@ public class MineFlow_Capstone extends PApplet{
 			        	seperated_colors[color] = 0;
 			        }
 				}
-				current_pixel = color(seperated_colors[0],seperated_colors[1],seperated_colors[2]);		//splice the colors back together
+				current_pixel = (0xFF << 24) | (seperated_colors[0] << 16) | (seperated_colors[1] << 8) | seperated_colors[2];		//splice the colors back together
 			} while(!(cell_color_array[i].compareAndSet(expected_CAS, current_pixel)));
 			
 			/* 
