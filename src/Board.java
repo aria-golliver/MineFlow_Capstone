@@ -13,7 +13,7 @@ public class Board {
 	public final int mines;
 	private boolean first_move;
 	private AtomicInteger[] cell_color_array;
-	
+
 	public Board(int board_width, int board_height, int screen_width, int screen_height, int mines, AtomicInteger[] cell_color_array){
 		this.board_width = board_width;
 		this.board_height = board_height;
@@ -23,41 +23,41 @@ public class Board {
 
 		this.cell_color_array = cell_color_array;
 	}
-	
+
 	public void new_game(){
 		generate_board();
 	}
-	
+
 	private void generate_board(){
 		board = new Cell[board_width][board_height];
 		first_move = true;
 		lost = false;
 		won = false;
-		
+
 		/* 
 		 * create the board
 		 * it is a 2 dimensional array of Cells
 		 */
-		
+
 		for(int x = 0; x < board_width; x++){
 			for(int y = 0; y < board_height; y++){
 				board[x][y] = new Cell();
 			}
 		}
-		
+
 		int mines_left = mines;
-		
+
 		//places mines randomly
 		while(mines_left > 0){
 			int x = (int)(Math.random()*board_width);
 			int y = (int)(Math.random()*board_height);
-			
+
 			if(!((boolean) board[x][y].mine)){
 				board[x][y].mine = true;
 				mines_left--;
 			}
 		}
-		
+
 		generate_surrounding_mines_metadata();
 	}
 
@@ -72,7 +72,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	public int total_arround_cell(int x, int y, String key, boolean GET_TRUE_KEYS){
 		int surrounding_true_cells = 0;
 		switch(key){
@@ -108,18 +108,18 @@ public class Board {
 			if(!out_of_bounds(x-1,y  )) if((boolean) board[x-1][y  ].flagged) surrounding_true_cells++;
 			break;
 		}
-		
+
 		if(GET_TRUE_KEYS) return surrounding_true_cells;
 		return 8 - surrounding_true_cells;
 	}
-	
+
 	public boolean left_click(int x, int y){
 		if(out_of_bounds(x,y) || won || lost) return false;
 		boolean made_a_move = false;
 		if(!(boolean) board[x][y].flagged) made_a_move = reveal(x,y);
 		return made_a_move;
 	}
-	
+
 	/*
 	 * public function that accepts which cell was middle_clicked on
 	 * emulates the middle_click or double_click functionality of most minesweeper boards
@@ -140,7 +140,7 @@ public class Board {
 		made_a_move = left_click(x-1,y  ) || made_a_move;
 		return made_a_move;
 	}
-	
+
 	/* 
 	 * public way to set flags
 	 */
@@ -148,10 +148,10 @@ public class Board {
 		if(toggle_flag(x,y)) {
 			return true;
 		} return false;
-		
-		
+
+
 	}
-	
+
 	/*
 	 * does the actual setting of the flagged? flag
 	 * if the cell is already flagged, it does nothing and returns false
@@ -166,14 +166,14 @@ public class Board {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * recursive function gets a cell location (from either a click or a prior reveal)
 	 * and starts revealing from that point in all directions
 	 */
 	private boolean reveal(int x, int y){
 		if(out_of_bounds(x,y) || won || lost) return false;
-		
+
 		if((boolean) board[x][y].mine && !((boolean) board[x][y].flagged)){
 			//if you hit a mine
 			if(first_move){
@@ -198,7 +198,7 @@ public class Board {
 			return true;
 		}
 		first_move = false;
-		
+
 		// if you didn't hit a mine...
 		if((boolean) board[x][y].uncovered){
 			// if it's already uncovered, return false
@@ -223,7 +223,7 @@ public class Board {
 			return true;
 		}
 	}
-	
+
 	private void set_pixels_array(int x, int y) {
 		int color;
 		/*
@@ -243,13 +243,13 @@ public class Board {
 		} else {
 			color = 0xFF000000;
 		}
-		
+
 		/*
-		 * the pixel array is 1-dimensional, so the correct indice  is (y*width) + x instead of [x][y]
+		 * the pixel array is 1-dimensional, so the correct indice is (y*width) + x instead of [x][y]
 		 */
 		cell_color_array[(y * (board_width)) + x].set(color);
 	}
-	
+
 	/*
 	 * returns whether or not the board is in a 'win' state, where all non-mine cells are uncovered
 	 */
@@ -291,7 +291,7 @@ public class Board {
 	private boolean out_of_bounds(int x, int y){
 		return (x >= board_width || x < 0 || y >= board_height || y < 0);
 	}
-	
+
 	/* returns -1 if out of bounds, or is not uncovered
 	 * else returns the number of surrounding mines
 	 * 
@@ -303,5 +303,5 @@ public class Board {
 		}
 		return -1;
 	}
-	
+
 }
